@@ -91,6 +91,7 @@
       </style>
 </head>
 <body>
+    
     <div class="gameboard">
         <div id="celeste" class="color celeste left" data-color="celeste"></div>
         <div id="violeta" class="color violeta right" data-color="violeta"></div>
@@ -218,6 +219,7 @@
           const numeroColor = this.transformarColorANumero(nombreColor)
           this.iluminarColor(nombreColor)
           if (numeroColor === this.secuencia[this.subnivel]) {
+            this.nivelAnterior = this.subnivel
             this.subnivel++
             if (this.subnivel === this.nivel) {
               //pasa de nivel 
@@ -228,7 +230,8 @@
                 this.ganoElJuego()
               }else {
                 //siguiente nivel 
-                setTimeout(this.siguienteNivel, 1500)
+                this.ganoSiguienteNivel(this.nivelAnterior)
+                setTimeout(this.siguienteNivel, 2000)
               }
             }
           }else {
@@ -240,6 +243,16 @@
         ganoElJuego(){
           swal('Juego','Ganaste el juego!','success')
             .then(this.inicializar)
+        }
+
+        ganoSiguienteNivel(nivelAnterior){
+          swal({
+                 title : 'Juego', 
+                 text : 'Ganaste Nivel No. ' + this.nivelAnterior , 
+                 icon : 'success',
+                 timer : 1500,
+                 buttons : false 
+                })
         }
 
         perdioElJuego(){
