@@ -97,9 +97,10 @@
         <div id="violeta" class="color violeta right" data-color="violeta"></div>
         <div id="naranja" class="color naranja left" data-color="naranja"></div>
         <div id="verde" class="color verde right" data-color="verde"></div>
-        <button id="btnEmpezar" class="btn-start" onclick="empezarJuego()">Empezar a jugar!</button>
+        <button id="btnEmpezar" class="btn-start" onclick="empezarJuego()">Iniciar!</button>
       </div>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.0.1/dist/confetti.browser.min.js"></script>
       <script>
         //para mostrar el mensaje de que perdio podemos utilizar una librería 
         //llamada sweetalert.js.org
@@ -108,9 +109,7 @@
         const naranja = document.getElementById('naranja')
         const verde = document.getElementById('verde')
         const btnEmpezar = document.getElementById('btnEmpezar')
-        const ULTIMO_NIVEL = 10
-
-        //swal('Hola!')
+        const ULTIMO_NIVEL = 3
 
       class Juego {
         constructor() {
@@ -241,14 +240,35 @@
         }
 
         ganoElJuego(){
-          swal('Juego','Ganaste el juego!','success')
+          var duration = 10 * 1000;
+          var animationEnd = Date.now() + duration;
+          var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+          function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+          }
+
+          var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+              return clearInterval(interval);
+            }
+
+            var particleCount = 50 * (timeLeft / duration);
+            // since particles fall down, start a bit higher than random
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+          }, 250);
+            swal('Felicidades!','Ganaste el juego! ;)','success')
             .then(this.inicializar)
         }
 
         ganoSiguienteNivel(nivelAnterior){
+         confetti()
           swal({
-                 title : 'Juego', 
-                 text : 'Ganaste Nivel No. ' + this.nivelAnterior , 
+                 title : 'Ganaste!', 
+                 text : 'Nivel No. ' + this.nivelAnterior , 
                  icon : 'success',
                  timer : 1500,
                  buttons : false 
@@ -256,7 +276,7 @@
         }
 
         perdioElJuego(){
-          swal('Juego','Lo lamentamos, perdiste :(','error')
+          swal('Perdiste!','Lo sentimos perdiste el juego :(','error')
             .then(() => {
               this.eliminarEventosClick()
               this.inicializar()
@@ -264,6 +284,10 @@
         }
 
       }
+
+      
+
+    
 
       function empezarJuego() {
         //alert('el juego va a comenzar')
